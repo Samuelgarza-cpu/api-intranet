@@ -4,8 +4,11 @@ const app = express();
 const cors = require('cors')
 require('dotenv').config();
 const morgan = require('morgan');
+const path = require('path');
+const multer = require('multer');
 
 
+app.use('/public',express.static(path.join(__dirname,'public')))
 app.set('puerto', process.env.PORT || 5050)
 
 app.use(express.urlencoded({ extended: false }))

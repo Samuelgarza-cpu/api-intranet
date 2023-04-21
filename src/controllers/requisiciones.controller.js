@@ -29,12 +29,18 @@ async function getAvisos(req, res) {
 }
 
 async function InsertarAvisos(req, res) {
+
+    
+
+ 
     try {
         const { titulo, descripcion, archivo, fecha } = req.body
         const [result] = await pool.query(`INSERT INTO avisos (Titulo,Descripcion,Imagen,Fecha_Aviso) VALUES (?,?,?,?)`, [titulo, descripcion, archivo, fecha])
-
         if (result.affectedRows > 0) {
-            res.json(1)
+
+
+            
+            res.json({"code":1 , "idIsert":result.insertId})
         }
 
     } catch (err) {
@@ -159,7 +165,32 @@ async function getUsuario(req, res) {
 
 }
 
+async function saveImagen(req, res) {
+
+    const{id} = req.params
+    const nombreImagen = req.file.originalname
+    try{
+
+        const [result] = await pool.query(`UPDATE avisos SET Imagen =? WHERE idAvisos = ?`, [nombreImagen,id])
+
+        if (result.affectedRows > 0) {
+            res.json(1);
+        } else {
+            res.json(0)
+        }
+    }catch(err){
+
+        res.json(err);
+
+    }
+    
+  
 
 
 
-module.exports = { saveToken, getAvisos, InsertarAvisos, saveUsuario,getUsuario }
+}
+
+
+
+
+module.exports = { saveToken, getAvisos, InsertarAvisos, saveUsuario,getUsuario,saveImagen }
