@@ -30,17 +30,17 @@ async function getAvisos(req, res) {
 
 async function InsertarAvisos(req, res) {
     try {
- 
+
         const { titulo, descripcion, archivo, fecha } = req.body
         const [result] = await pool.query(`INSERT INTO avisos (Titulo,Descripcion,Imagen,Fecha_Aviso) VALUES (?,?,?,?)`, [titulo, descripcion, archivo, fecha])
         if (result.affectedRows > 0) {
             const [results] = await pool.query('SELECT * FROM tokens')
-      
+
             results.forEach(element => {
                 element.expirationTime = null
                 enviarNotificacion(element)
             });
-     
+
             res.json({ "code": 1, "idIsert": result.insertId })
         }
 
@@ -70,30 +70,33 @@ const payload = {
 }
 
 async function enviarNotificacion(dataIn) {
+    try {
 
+        const jsonEnviar = {
+            "endpoint": dataIn.endpoint,
+            "expirationTime": dataIn.expirationTime,
+            "keys": {
+                "auth": dataIn.auth,
+                "p256dh": dataIn.p256dh
+            }
 
-
-    const jsonEnviar ={
-        "endpoint":dataIn.endpoint,
-        "expirationTime":dataIn.expirationTime,
-        "keys":{
-            "auth": dataIn.auth,
-            "p256dh": dataIn.p256dh
         }
-   
-    }
 
-    const datosentrada = jsonEnviar;
-  
-    let respuestaData = 0;
-    const resultado = await webpush.sendNotification(
-        datosentrada,
-        JSON.stringify(payload))
-    if (resultado.statusCode == 201) {
-        respuestaData = 1
-    }
-    return respuestaData
+        const datosentrada = jsonEnviar;
 
+        let respuestaData = 0;
+        const resultado = await webpush.sendNotification(
+            datosentrada,
+            JSON.stringify(payload))
+        if (resultado.statusCode == 201) {
+            respuestaData = 1
+        }
+        return respuestaData
+
+    } catch (err) {
+
+        console.log(err)
+    }
 
 }
 async function saveToken(req, res) {
@@ -103,7 +106,7 @@ async function saveToken(req, res) {
 
 
         const [existeU] = await pool.query("select * from tokens where endpoint = ? and p256dh = ? and auth = ?", [endpoint, keys.p256dh, keys.auth])
-      
+
 
         if (existeU.length >= 1) {
             res.json({ "mensaje": "Ya esta ese token registrado" })
@@ -111,17 +114,7 @@ async function saveToken(req, res) {
         } else {
             const [result] = await pool.query(`INSERT INTO tokens (endpoint,p256dh,auth,idusuarios,fecha_alta) VALUES (?,?,?,?,?)`, [endpoint, keys.p256dh, keys.auth, idUser, fechahoy])
             if (result.affectedRows > 0) {
-
-
-
-                // const respuesta = await enviarNotificacion(req.body)
-                // if (respuesta == 1) {
-
-                // } else {
-                //     return res.json({ "mensaje": "Error" })
-                // }
                 res.json({ "mensaje": "Recivido" });
-                // res.json(1)
             } else {
                 res.json({ "mensaje": "Nada que Insertar" })
             }
@@ -171,7 +164,7 @@ async function getUsuario(req, res) {
         const { email, password } = req.body
 
         const [results] = await pool.query('SELECT * FROM usuarios where correo = ? and Pass = ?', [email, password])
-  
+
         res.json(results)
     } catch {
         res.json([0])
