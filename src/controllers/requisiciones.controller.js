@@ -61,14 +61,10 @@ webpush.setVapidDetails(
 
 const payload = {
     "notification": {
-        "title": "HOLA NESTOR",
-        "body": "YA ESTOY ENVIANDO MENSAJES",
+        "title": "INTRANET",
+        "body": "SE A PUBLICADO UNA NOTICIA",
         "vibrate": [100, 50, 100],
-        "image": "https://w7.pngwing.com/pngs/533/966/png-transparent-computer-icons-user-login-casual-logo-monochrome-silhouette.png",
-        "actions": [{
-            "action": "windows.location.href= www.youtube.com",
-            "title": "jajaj"
-        }]
+        "image": "https://www.ayuntamientogp.imagendigitalstudio.com/img/logo.png"
 
     }
 }
@@ -96,8 +92,6 @@ async function enviarNotificacion(dataIn) {
     if (resultado.statusCode == 201) {
         respuestaData = 1
     }
-
-    console.log(resultado)
     return respuestaData
 
 
@@ -109,7 +103,7 @@ async function saveToken(req, res) {
 
 
         const [existeU] = await pool.query("select * from tokens where endpoint = ? and p256dh = ? and auth = ?", [endpoint, keys.p256dh, keys.auth])
-        console.log(existeU.length)
+      
 
         if (existeU.length >= 1) {
             res.json({ "mensaje": "Ya esta ese token registrado" })
@@ -177,7 +171,7 @@ async function getUsuario(req, res) {
         const { email, password } = req.body
 
         const [results] = await pool.query('SELECT * FROM usuarios where correo = ? and Pass = ?', [email, password])
-        console.log(results)
+  
         res.json(results)
     } catch {
         res.json([0])
