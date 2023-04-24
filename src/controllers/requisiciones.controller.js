@@ -30,11 +30,12 @@ async function getAvisos(req, res) {
 
 async function InsertarAvisos(req, res) {
     try {
-        const tokenContruido = [];
+ 
         const { titulo, descripcion, archivo, fecha } = req.body
         const [result] = await pool.query(`INSERT INTO avisos (Titulo,Descripcion,Imagen,Fecha_Aviso) VALUES (?,?,?,?)`, [titulo, descripcion, archivo, fecha])
         if (result.affectedRows > 0) {
             const [results] = await pool.query('SELECT * FROM tokens')
+      
             results.forEach(element => {
                 element.expirationTime = null
                 enviarNotificacion(element)
@@ -74,6 +75,8 @@ const payload = {
 
 async function enviarNotificacion(dataIn) {
 
+
+
     const jsonEnviar ={
         "endpoint":dataIn.endpoint,
         "expirationTime":dataIn.expirationTime,
@@ -84,7 +87,8 @@ async function enviarNotificacion(dataIn) {
    
     }
 
-    const datosentrada = JSON.parse(jsonEnviar);
+    const datosentrada = jsonEnviar;
+  
     let respuestaData = 0;
     const resultado = await webpush.sendNotification(
         datosentrada,
