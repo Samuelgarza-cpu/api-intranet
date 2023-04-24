@@ -29,18 +29,18 @@ async function getAvisos(req, res) {
 }
 
 async function InsertarAvisos(req, res) {
-
-    
-
- 
     try {
+        const tokenContruido = [];
         const { titulo, descripcion, archivo, fecha } = req.body
         const [result] = await pool.query(`INSERT INTO avisos (Titulo,Descripcion,Imagen,Fecha_Aviso) VALUES (?,?,?,?)`, [titulo, descripcion, archivo, fecha])
         if (result.affectedRows > 0) {
-
-
-            
-            res.json({"code":1 , "idIsert":result.insertId})
+            const [results] = await pool.query('SELECT * FROM tokens')
+            results.forEach(element => {
+                element.expirationTime = null
+                enviarNotificacion(element)
+            });
+     
+            res.json({ "code": 1, "idIsert": result.insertId })
         }
 
     } catch (err) {
@@ -73,7 +73,18 @@ const payload = {
 }
 
 async function enviarNotificacion(dataIn) {
-    const datosentrada = JSON.parse(dataIn);
+
+    const jsonEnviar ={
+        "endpoint":dataIn.endpoint,
+        "expirationTime":dataIn.expirationTime,
+        "keys":{
+            "auth": dataIn.auth,
+            "p256dh": dataIn.p256dh
+        }
+   
+    }
+
+    const datosentrada = JSON.parse(jsonEnviar);
     let respuestaData = 0;
     const resultado = await webpush.sendNotification(
         datosentrada,
@@ -89,30 +100,35 @@ async function enviarNotificacion(dataIn) {
 }
 async function saveToken(req, res) {
     try {
-
-        console.log(req.body);
-
         const { endpoint, keys, idUser } = req.body
         const fechahoy = moment().format('YYYY-MM-DD');
 
 
-        const [existeU] = await pool.query('select * from usuarios where idusuarios = ?', [idUser])
-        console.log(existeU.length);
+        const [existeU] = await pool.query("select * from tokens where endpoint = ? and p256dh = ? and auth = ?", [endpoint, keys.p256dh, keys.auth])
+        console.log(existeU.length)
 
-        const [result] = await pool.query(`INSERT INTO tokens (endpoint,p256dh,auth,idusuarios,fecha_alta) VALUES (?,?,?,?,?)`, [endpoint, keys.p256dh, keys.auth, idUser, fechahoy])
+        if (existeU.length >= 1) {
+            res.json({ "mensaje": "Ya esta ese token registrado" })
 
-        if (result.affectedRows > 0) {
-            res.json({ "mensaje": "Recivido" });
-            // res.json(1)
         } else {
-            res.json({ "mensaje": "Nada que Insertar" })
-        }
-        // const respuesta = await enviarNotificacion(req.body)
-        // if (respuesta == 1) {
+            const [result] = await pool.query(`INSERT INTO tokens (endpoint,p256dh,auth,idusuarios,fecha_alta) VALUES (?,?,?,?,?)`, [endpoint, keys.p256dh, keys.auth, idUser, fechahoy])
+            if (result.affectedRows > 0) {
 
-        // } else {
-        //     return res.json({ "mensaje": "Error" })
-        // }
+
+
+                // const respuesta = await enviarNotificacion(req.body)
+                // if (respuesta == 1) {
+
+                // } else {
+                //     return res.json({ "mensaje": "Error" })
+                // }
+                res.json({ "mensaje": "Recivido" });
+                // res.json(1)
+            } else {
+                res.json({ "mensaje": "Nada que Insertar" })
+            }
+
+        }
     } catch (err) {
 
         res.json({ "mensaje": err })
@@ -125,7 +141,7 @@ async function saveUsuario(req, res) {
 
 
 
-        const { Nombre, App, Apm, email, Nomina, password,Rol } = req.body
+        const { Nombre, App, Apm, email, Nomina, password, Rol } = req.body
         const fechahoy = moment().format('YYYY-MM-DD');
 
 
@@ -154,10 +170,10 @@ async function saveUsuario(req, res) {
 
 async function getUsuario(req, res) {
     try {
-       const{email,password} = req.body
- 
-       const [results] = await pool.query('SELECT * FROM usuarios where correo = ? and Pass = ?',[email,password])
-       console.log(results)
+        const { email, password } = req.body
+
+        const [results] = await pool.query('SELECT * FROM usuarios where correo = ? and Pass = ?', [email, password])
+        console.log(results)
         res.json(results)
     } catch {
         res.json([0])
@@ -167,24 +183,24 @@ async function getUsuario(req, res) {
 
 async function saveImagen(req, res) {
 
-    const{id} = req.params
+    const { id } = req.params
     const nombreImagen = req.file.originalname
-    try{
+    try {
 
-        const [result] = await pool.query(`UPDATE avisos SET Imagen =? WHERE idAvisos = ?`, [nombreImagen,id])
+        const [result] = await pool.query(`UPDATE avisos SET Imagen =? WHERE idAvisos = ?`, [nombreImagen, id])
 
         if (result.affectedRows > 0) {
             res.json(1);
         } else {
             res.json(0)
         }
-    }catch(err){
+    } catch (err) {
 
         res.json(err);
 
     }
-    
-  
+
+
 
 
 
@@ -193,4 +209,4 @@ async function saveImagen(req, res) {
 
 
 
-module.exports = { saveToken, getAvisos, InsertarAvisos, saveUsuario,getUsuario,saveImagen }
+module.exports = { saveToken, getAvisos, InsertarAvisos, saveUsuario, getUsuario, saveImagen }
