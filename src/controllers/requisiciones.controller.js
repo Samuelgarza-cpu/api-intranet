@@ -64,7 +64,7 @@ const payload = {
         "title": "INTRANET",
         "body": "SE A PUBLICADO UNA NOTICIA",
         "vibrate": [100, 50, 100],
-        "image": "https://www.ayuntamientogp.imagendigitalstudio.com/img/logo.png"
+        "image": "/public/login.png"
 
     }
 }
