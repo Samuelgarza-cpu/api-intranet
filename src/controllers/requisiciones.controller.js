@@ -65,10 +65,6 @@ const payload = {
         body: "SE A PUBLICADO UNA NOTICIA",
         vibrate: [100, 50, 100],
         icon: "src/public/login.png",
-        data: {
-            "dateOfArrival": Date.now(),
-            "primaryKey": 1
-        },
         actions: [
             { action: 'bar', title: 'Focus last' },
             { action: 'baz', title: 'Navigate last' },
@@ -82,13 +78,19 @@ const payload = {
                 },
                 baz: {
                     operation: 'navigateLastFocusedOrOpen',
-                    url: '/',
+                    url: 'https://ayuntamientogp.com/#/aviso',
                 },
             },
         },
-
     }
 }
+/* 
+openWindow : Abre una nueva pestaña en la URL especificada, que se resuelve en relación con el ámbito del trabajador del servicio. 
+
+focusLastFocusedOrOpen : Enfoca el último cliente enfocado. Si no hay ningún cliente abierto, abre una nueva pestaña en la URL especificada, que se resuelve en relación con el alcance del trabajador del servicio.
+
+navegarLastFocusedOrOpen : Enfoca el último cliente enfocado y lo navega a la URL especificada, que se resuelve en relación con el alcance del trabajador del servicio. Si no hay ningún cliente abierto, abre una nueva pestaña en la URL especificada.
+*/
 
 async function enviarNotificacion(dataIn) {
     try {
