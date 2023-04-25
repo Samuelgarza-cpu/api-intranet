@@ -70,7 +70,7 @@ const payload = {
             "primaryKey": 1
         },
         "actions": [{
-            "action": "explore",
+            "action": "www.youtube.com",
             "title": "Ir a la notificación"
         }]
 
