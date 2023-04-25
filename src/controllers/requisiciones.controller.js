@@ -64,7 +64,8 @@ const payload = {
         "title": "INTRANET",
         "body": "SE A PUBLICADO UNA NOTICIA",
         "vibrate": [100, 50, 100],
-        "image": "/public/login.png"
+        "image": "/public/login.png",
+        "click_action": "www.youtube.com"
 
     }
 }
