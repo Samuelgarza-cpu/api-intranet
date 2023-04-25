@@ -64,9 +64,15 @@ const payload = {
         "title": "INTRANET",
         "body": "SE A PUBLICADO UNA NOTICIA",
         "vibrate": [100, 50, 100],
-        "image": "/public/login.png",
-        "click_action": "www.youtube.com",
-        "url": "www.google.com"
+        "image": "src/public/login.png",
+        "data": {
+            "dateOfArrival": Date.now(),
+            "primaryKey": 1
+        },
+        "actions": [{
+            "action": "explore",
+            "title": "Ir a la notificación"
+        }]
 
     }
 }
@@ -116,7 +122,7 @@ async function saveToken(req, res) {
         } else {
             const [result] = await pool.query(`INSERT INTO tokens (endpoint,p256dh,auth,idusuarios,fecha_alta) VALUES (?,?,?,?,?)`, [endpoint, keys.p256dh, keys.auth, idUser, fechahoy])
             if (result.affectedRows > 0) {
-                res.json({ "mensaje": "Recivido" });
+                res.json({ "mensaje": "Recibido" });
             } else {
                 res.json({ "mensaje": "Nada que Insertar" })
             }
