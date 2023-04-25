@@ -66,19 +66,18 @@ const payload = {
         vibrate: [100, 50, 100],
         icon: "src/public/login.png",
         actions: [
-            { action: 'pestania', title: 'Abrir nueva pestaña' },
-            { action: 'navegador', title: 'Lleva al enlace pag actual' },
+            { action: 'paginaActual', title: 'Lleva al enlace pag actual' },
         ],
         data: {
             onActionClick: {
                 default: { operation: 'openWindow' },
                 pestania: {
                     operation: 'focusLastFocusedOrOpen',
-                    url: '/',
+                    url: `/`,
                 },
-                navegador: {
+                paginaActual: {
                     operation: 'navigateLastFocusedOrOpen',
-                    url: 'https://ayuntamientogp.com/',
+                    url: '/',
                 },
             },
         },
