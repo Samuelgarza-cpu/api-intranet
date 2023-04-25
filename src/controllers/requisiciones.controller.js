@@ -66,7 +66,7 @@ const payload = {
         vibrate: [100, 50, 100],
         icon: "src/public/login.png",
         actions: [
-            { action: 'paginaActual', title: 'Lleva al enlace pag actual' },
+            { action: 'paginaActual', title: 'Ir al POST' },
         ],
         data: {
             onActionClick: {
