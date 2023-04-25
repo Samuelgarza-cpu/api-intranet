@@ -66,17 +66,17 @@ const payload = {
         vibrate: [100, 50, 100],
         icon: "src/public/login.png",
         actions: [
-            { action: 'bar', title: 'Focus last' },
-            { action: 'baz', title: 'Navigate last' },
+            { action: 'pestania', title: 'Abrir nueva pestaña' },
+            { action: 'navegador', title: 'Lleva al enlace pag actual' },
         ],
         data: {
             onActionClick: {
                 default: { operation: 'openWindow' },
-                bar: {
+                pestania: {
                     operation: 'focusLastFocusedOrOpen',
-                    url: '/https://ayuntamientogp.com/#/aviso',
+                    url: 'https://ayuntamientogp.com/#/aviso',
                 },
-                baz: {
+                navegador: {
                     operation: 'navigateLastFocusedOrOpen',
                     url: 'https://ayuntamientogp.com/#/aviso',
                 },
