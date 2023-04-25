@@ -74,11 +74,11 @@ const payload = {
                 default: { operation: 'openWindow' },
                 pestania: {
                     operation: 'focusLastFocusedOrOpen',
-                    url: 'https://ayuntamientogp.com/#/aviso',
+                    url: '/',
                 },
                 navegador: {
                     operation: 'navigateLastFocusedOrOpen',
-                    url: 'https://ayuntamientogp.com/#/aviso',
+                    url: 'https://ayuntamientogp.com/',
                 },
             },
         },
