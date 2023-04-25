@@ -65,7 +65,8 @@ const payload = {
         "body": "SE A PUBLICADO UNA NOTICIA",
         "vibrate": [100, 50, 100],
         "image": "/public/login.png",
-        "click_action": "www.youtube.com"
+        "click_action": "www.youtube.com",
+        "url": "www.google.com"
 
     }
 }
