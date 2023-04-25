@@ -60,19 +60,32 @@ webpush.setVapidDetails(
 );
 
 const payload = {
-    "notification": {
-        "title": "INTRANET",
-        "body": "SE A PUBLICADO UNA NOTICIA",
-        "vibrate": [100, 50, 100],
-        "image": "src/public/login.png",
-        "data": {
+    notification: {
+        title: "INTRANET",
+        body: "SE A PUBLICADO UNA NOTICIA",
+        vibrate: [100, 50, 100],
+        icon: "src/public/login.png",
+        data: {
             "dateOfArrival": Date.now(),
             "primaryKey": 1
         },
-        "actions": [{
-            "action": "www.youtube.com",
-            "title": "Ir a la notificación"
-        }]
+        actions: [
+            { action: 'bar', title: 'Focus last' },
+            { action: 'baz', title: 'Navigate last' },
+        ],
+        data: {
+            onActionClick: {
+                default: { operation: 'openWindow' },
+                bar: {
+                    operation: 'focusLastFocusedOrOpen',
+                    url: '/https://ayuntamientogp.com/#/aviso',
+                },
+                baz: {
+                    operation: 'navigateLastFocusedOrOpen',
+                    url: '/',
+                },
+            },
+        },
 
     }
 }
